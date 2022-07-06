@@ -18,17 +18,11 @@ app.get('/books', (req,res)=>{
 
 app.get('/books/:id', (req, res)=>{
     let id = req.params['id'];
-    let ok=0;
-    for(i=0;i<books.length;i++)
-    {
-        if(books[i].id==id)
-            {
-                ok=1;
-                res.json(books[i]);
-            }
-    }
-    if(!ok)
+    let found = books.filter(book => book.id == id);
+    if(!found.length)
         res.json(`Cartea cu idul ${id} nu exista!`);
+    else
+        res.json(found);
 });
 
 app.post('/books', (req,res)=>{
