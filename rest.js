@@ -10,17 +10,17 @@ app.use(parser.urlencoded({ extended: true }))
 let books = [];
 
 app.get('/books', (req,res)=>{
-    if(books.length==0){
-        res.json("Nu exista carti in colectie!");
-    }
-    res.json(books);
+    if(books.length==0)
+        res.json({"message":`There are no books in the collection!`});
+    else
+        res.json(books);
 });
 
 app.get('/books/:id', (req, res)=>{
     let id = req.params['id'];
     let found = books.filter(book => book.id == id);
     if(!found.length)
-        res.json(`Cartea cu idul ${id} nu exista!`);
+        res.json({"message":`The book with the id ${id} does not exist!`});
     else
         res.json(found);
 });
@@ -28,7 +28,7 @@ app.get('/books/:id', (req, res)=>{
 app.post('/books', (req,res)=>{
     let data = req.body;
     books.push(data)
-    res.json('Cartea a fost adaugata la colectie!');
+    res.json({"message":'The book has been added to the collection!'});
 });
 
 app.put('/books/:id', (req,res)=>{
@@ -36,27 +36,24 @@ app.put('/books/:id', (req,res)=>{
     let data = req.body;
     let i = books.findIndex(book => book.id == ids);
     if(i == -1)
-        res.json(`Cartea cu idul ${id} nu exista!`);
+        res.json({"messge":`The book with the id ${id} does not exist!`});
+    else{
     books[i].name = data.name;
     books[i].auth = data.auth;
-    res.json('Datele cartii au fost schimbate cu succes!');
+    res.json({"message":`The book's data was succesfully updated!`});
+    }
 });
 
 app.delete('/books/:id', (req,res)=>{
     let id = req.params['id'];
-    let ok=0;
-    for(i=0;i<books.length;i++)
-    {
-        if(books[i].id==id)
-            {
-                books.splice(i,1);
-                ok=1;
-                res.json(`Cartea cu idul ${id} a fost eliminata cu succes!`);
-            }
-    }
-    if(!ok)
-        res.json(`Cartea cu idul ${id} nu exista!`);
+    let aux = books.filter(book => book.id != id);
+    if(aux.length == books.length)
+        res.json({"message":`The book with the id ${id} does not exist!`});
+    else
+        res.json({"message": `The book with id ${id} was succesfully deleted!`});
+    books = aux
 });
+
 app.listen(port, function() {
-    console.log(`Server deschis pe portul ${port}`)
+    console.log(`Server opened on port ${port}`)
 }); 
