@@ -12,7 +12,7 @@ app.use(parser.json())
 app.use(parser.urlencoded({ extended: true }))
 
 const {MongoClient} = require('mongodb');
-const uri = "mongodb+srv://admin:<pass>@cluster0.2inaizf.mongodb.net/?retryWrites=true&w=majority";
+const uri = "mongodb+srv://admin:MuieMihai@cluster0.2inaizf.mongodb.net/?retryWrites=true&w=majority";
 const client =  new MongoClient(uri);
 
 try{
@@ -42,8 +42,8 @@ app.put("/users", (req,res)=>{
     delete data.password;
     dba.collection("Users").updateOne({email: data.email, password: md5(pass)},{$set:data}, (err,re)=>{
         if(err) throw err;
-        if(re){
-            res.json(data);
+        if(re.matchedCount){
+            res.json(data); 
         }
         else{
             res.json({message: "Wrong email or password!"});
@@ -55,13 +55,15 @@ app.delete("/users/:id", (req,res)=>{
     let dba = client.db("Users");
     let id = req.params['id'];
     let data = req.body;
-    let ok = dba.collection("Users").deleteOne({email: id, password: md5(data.password)});
-    if(ok.deletedCount == 0){
-        res.json({message: " Wrong email or password!"});
-    }
-    else{
-        res.json({message: "User succesfully deleted!"});
-    }
+    let ok = dba.collection("Users").deleteOne({email: id, password: md5(data.password)},(err,re)=>{
+        if(err) throw err;
+        if(re.deletedCount){
+            res.json({message: "User succesfully deleted!"});
+        }
+        else{
+            res.json({message: "Wrong email or password!"});
+        }
+    });
 });
 
 app.post("/auth", (req,res)=>{
