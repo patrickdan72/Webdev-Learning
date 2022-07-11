@@ -12,7 +12,7 @@ app.use(parser.json())
 app.use(parser.urlencoded({ extended: true }))
 
 const {MongoClient} = require('mongodb');
-const uri = "mongodb+srv://admin:M8NQceFYAw3hVHvf@cluster0.2inaizf.mongodb.net/?retryWrites=true&w=majority";
+const uri = "mongodb+srv://admin:<pass>@cluster0.2inaizf.mongodb.net/?retryWrites=true&w=majority";
 const client =  new MongoClient(uri);
 
 try{
