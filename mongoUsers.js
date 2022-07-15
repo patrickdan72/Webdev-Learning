@@ -1,18 +1,26 @@
-async function main()
-{
+const dotenv = require('dotenv');
 
 const express = require('express');
-const port = 5000;
-const app = express();
+
+const {MongoClient} = require('mongodb');
+
+const parser = require('body-parser');
 
 let md5 = require('md5');
 
-const parser = require('body-parser');
+async function main()
+{
+
+const app = express();
+
+const config = dotenv.config();
+
+const port = process.env.PORT;
+
 app.use(parser.json())
 app.use(parser.urlencoded({ extended: true }))
 
-const {MongoClient} = require('mongodb');
-const uri = "mongodb+srv://admin:MuieMihai@cluster0.2inaizf.mongodb.net/?retryWrites=true&w=majority";
+const uri = process.env.URI;
 const client =  new MongoClient(uri);
 
 try{
@@ -84,6 +92,7 @@ app.post("/auth", (req,res)=>{
 app.listen(port, function() {
     console.log(`Server opened on port ${port}`);
 });
+
 }; 
 
 main();
